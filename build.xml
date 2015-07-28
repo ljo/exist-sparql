@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="all" name="exist-sparql">
+  <property file="local.build.properties"/>
+  <property file="build.properties"/>
+
+  <condition property="git.commit" value="${git.commit}" else="">
+    <isset property="git.commit"/>
+  </condition>
+
+  <property name="project.version" value="0.1"/>
+  <property name="project.app" value="sparql"/>
+  <property name="project.app.jar" value="${project.app}-${project.version}${git.commit}.jar"/>
+  <property name="project.lib.version" value="0.1-SNAPSHOT"/>
+  <property name="project.lib.jar" value="${project.app}-${project.version}-jar-with-dependencies.jar"/>
+  <property name="build" value="./build"/>
+  <property name="java.src" value="java/src"/>
+  <property name="java.classes" value="${build}/classes"/>
+  <property name="java.libs" value="java/lib"/>
+  <property name="scripts" value="resources/scripts"/>
+  <property name="server.url" value="http://demo.exist-db.org/exist/apps/public-repo/public/"/>
+
+  <path id="classpath">
+    <fileset dir="${exist.dir}">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${exist.dir}/lib/core">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${exist.dir}/lib/optional">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${exist.dir}/lib/extensions">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${exist.dir}/extensions/modules/lib">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${exist.dir}/tools/jetty/lib">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${java.libs}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="all" depends="xar"/>
+  <target name="rebuild" depends="clean,all"/>
+
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${java.classes}"/>
+    <delete file="expath-pkg.xml"/>
+    <delete file="exist.xml"/>
+  </target>
+
+  <target name="prepare">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${java.classes}"/>
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac srcdir="${java.src}" destdir="${java.classes}" optimize="true" debug="true" target="1.7" source="1.7" includeantruntime="false">
+      <classpath>
+        <path refid="classpath"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar basedir="${java.classes}" jarfile="${build}/${project.app.jar}">
+      <manifest>
+        <attribute name="Project-Name" value="${project.app}"/>
+        <attribute name="Project-Version" value="${project.version}"/>
+        <attribute name="Project-Build" value="${git.commit}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="xar" depends="jar">
+    <copy file="expath-pkg.xml.tmpl" tofile="expath-pkg.xml" filtering="true" overwrite="true">
+      <filterset>
+        <filter token="project.version" value="${project.version}"/>
+      </filterset>
+    </copy>
+    <copy file="exist.xml.tmpl" tofile="exist.xml" filtering="true" overwrite="true">
+      <filterset>
+        <filter token="project.version" value="${project.version}"/>
+        <filter token="project.app.jar" value="${project.app.jar}"/>
+        <filter token="project.lib.jar" value="${project.lib.jar}"/>
+      </filterset>
+    </copy>
+    <zip destfile="${build}/${project.app}-${project.version}${git.commit}.xar">
+      <fileset dir=".">
+        <include name="*.*"/>
+        <include name="modules/**"/>
+        <include name="templates/**"/>
+        <include name="resources/**"/>
+        <exclude name=".git*"/>
+        <exclude name="build.*"/>
+        <exclude name="*.tmpl"/>
+        <exclude name="*.properties"/>
+      </fileset>
+      <zipfileset dir="${build}" includes="*.jar" prefix="content"/>
+      <zipfileset dir="${java.libs}" includes="*.jar" prefix="content"/>
+    </zip>
+    <delete dir="${build}/classes"/>
+    <delete>
+      <fileset dir="${build}">
+        <include name="*.jar"/>
+      </fileset>
+    </delete>
+  </target>
+  <target name="upload">
+    <input message="Enter password:" addproperty="server.pass" defaultvalue="">
+      <handler type="secure"/>
+    </input>
+    <property name="xar" value="${project.app}-${project.version}${git.commit}.xar"/>
+    <exec executable="curl">
+      <arg line="-T ${build}/${xar} -u admin:${server.pass} ${server.url}/${xar}"/>
+    </exec>
+  </target>
+</project>

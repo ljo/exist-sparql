@@ -1,0 +1,8 @@
+*.class
+*.iml
+*.xar
+expath-pkg.xml
+exist.xml
+local.build.properties
+build/
+target/
