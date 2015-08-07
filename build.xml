@@ -13,6 +13,7 @@
   <property name="project.lib.version" value="0.1-SNAPSHOT"/>
   <property name="project.lib.jar" value="${project.app}-${project.version}-jar-with-dependencies.jar"/>
   <property name="build" value="./build"/>
+  <property name="build.compiler" value="extJavac"/>
   <property name="java.src" value="java/src"/>
   <property name="java.classes" value="${build}/classes"/>
   <property name="java.libs" value="java/lib"/>
