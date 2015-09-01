@@ -1,10 +1,13 @@
 package org.exist.indexing.rdf;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.tdb.StoreConnection;
@@ -19,7 +22,7 @@ import org.exist.storage.BrokerPool;
 import org.exist.storage.DBBroker;
 import org.exist.storage.btree.DBException;
 import org.exist.util.DatabaseConfigurationException;
-import org.apache.commons.io.FileUtils;
+//import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Attr;
@@ -38,8 +41,7 @@ public class TDBRDFIndex extends RDFIndex implements RawBackupSupport {
     private StoreConnection connection;
     public static String ID = RDFIndex.ID; //"tdb-rdf-index";
     private static final String DIR_NAME = "tdb";
-    //protected Directory directory;
-    protected File directory;
+    protected Path directory;
 
     public String getDirName() {
         return DIR_NAME;
@@ -48,7 +50,7 @@ public class TDBRDFIndex extends RDFIndex implements RawBackupSupport {
     @Override
     public void open() throws DatabaseConfigurationException {
 //        this.dataset = TDBFactory.createDataset(getDataDir());
-	directory = new File(getDataDir(), getDirName());
+	directory = getDataDir();
 
         TDB.getContext().set(TDB.symUnionDefaultGraph, true); // todo: make configurable?
         connection = StoreConnection.make(getMyDataDir());
@@ -74,20 +76,21 @@ public class TDBRDFIndex extends RDFIndex implements RawBackupSupport {
 
     @Override
     public void remove() throws DBException {
-        close();
-        // delete data directory
-        try {
-            FileUtils.deleteDirectory(directory);
-        } catch (IOException ex) {
-            LOG.error(ex);
-            throw new DBException(ex.toString());
+	close();
+	try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+	    for (Path file : stream) {
+                Files.delete(file);
+            }
+        } catch (Exception e) {
+            LOG.warn(e.getMessage(), e);
         }
     }
 
-//    @Override
-//    public String getDataDir() {
-//        return super.getDataDir() + "/tdb";
-//    }
+    @Override
+    public Path getDataDir() {
+        return super.getDataDir().resolve(getDirName());
+    }
+
     @Override
     public IndexWorker getWorker(DBBroker broker) {
         TDBIndexWorker worker = (TDBIndexWorker) workers.get(broker);
@@ -115,13 +118,13 @@ public class TDBRDFIndex extends RDFIndex implements RawBackupSupport {
 
     private String getMyDataDir() {
 	if (directory == null) {
-	    directory = new File(getDataDir(), getDirName());
+	    directory = getDataDir();
 	}
-        return directory.getAbsolutePath();
+        return directory.toAbsolutePath().toString();
     }
 
     @Override
-    public void configure(BrokerPool pool, String dataDir, Element config) throws DatabaseConfigurationException {
+    public void configure(BrokerPool pool, Path dataDir, Element config) throws DatabaseConfigurationException {
         super.configure(pool, dataDir, config);
 
 	if (LOG.isDebugEnabled()) {
@@ -152,17 +155,17 @@ public class TDBRDFIndex extends RDFIndex implements RawBackupSupport {
 
     @Override
     public void backupToArchive(RawDataBackup backup) throws IOException {
-	for (String name : directory.list()) {
-	    String path = getDirName() + "/" + name;
-	    OutputStream os = backup.newEntry(path);
-	    InputStream is = new FileInputStream(new File(getDataDir(), path));
-	    byte[] buf = new byte[4096];
-	    int len;
-	    while ((len = is.read(buf)) > 0) {
-		os.write(buf, 0, len);
+	try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+	    for (Path file : stream) {
+		String path = file.getFileName().toString();
+		try (final OutputStream os = backup.newEntry(path)) {
+		    Files.copy(getDataDir().resolve(path), os);
+		} finally {
+		    backup.closeEntry();
+		}
 	    }
-	    is.close();
-	    backup.closeEntry();
+	} catch (IOException | DirectoryIteratorException die) {
+	    LOG.error("Could not read directory: " + directory.toAbsolutePath().toString());
 	}
     }
 
