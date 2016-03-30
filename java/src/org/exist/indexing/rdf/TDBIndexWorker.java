@@ -21,6 +21,7 @@ import org.exist.indexing.IndexController;
 import org.exist.indexing.IndexWorker;
 import org.exist.indexing.MatchListener;
 import org.exist.indexing.StreamListener;
+import org.exist.indexing.StreamListener.ReindexMode;
 import org.exist.security.PermissionDeniedException;
 import org.exist.storage.DBBroker;
 import org.exist.storage.IndexSpec;
@@ -57,7 +58,7 @@ public class TDBIndexWorker implements IndexWorker {
     private final Model cacheModel = GraphFactory.makeDefaultModel();
 
     private RDFIndexConfig config;
-    private int mode;
+    private ReindexMode mode;
     private final TDBStreamListener listener = new TDBStreamListener();
     private IndexController controller;
     private static final String CONFIG_ELEMENT_NAME = "rdf";
@@ -116,13 +117,13 @@ public class TDBIndexWorker implements IndexWorker {
     }
 
     @Override
-    public void setDocument(DocumentImpl document, int mode) {
+    public void setDocument(DocumentImpl document, ReindexMode mode) {
         setDocument(document);
         setMode(mode);
     }
 
     @Override
-    public void setMode(int mode) {
+    public void setMode(ReindexMode mode) {
         this.mode = mode;
     }
 
@@ -132,7 +133,7 @@ public class TDBIndexWorker implements IndexWorker {
     }
 
     @Override
-    public int getMode() {
+    public ReindexMode getMode() {
         return mode;
     }
 
@@ -151,7 +152,7 @@ public class TDBIndexWorker implements IndexWorker {
 
     @Override
     public StreamListener getListener() {
-        if (currentDoc == null || mode == StreamListener.REMOVE_ALL_NODES)
+        if (currentDoc == null || mode == ReindexMode.REMOVE_ALL_NODES)
             return null;
 
         listener.reset(currentDoc);
@@ -169,25 +170,25 @@ public class TDBIndexWorker implements IndexWorker {
             return;
 
         switch (mode) {
-            case StreamListener.STORE:
+            case STORE:
                 storeNodes();
                 break;
-            case StreamListener.REMOVE_ALL_NODES:
+            case REMOVE_ALL_NODES:
                 removeDocument();
                 // reset mode because we dont want to try to remove doc again
                 // on any subsequent flush (like during database shutdown)
-                mode = StreamListener.UNKNOWN;
+                mode = ReindexMode.UNKNOWN;
                 break;
-            case StreamListener.REMOVE_SOME_NODES:
+            case REMOVE_SOME_NODES:
                 removeNodes();
                 break;
-            case StreamListener.REMOVE_BINARY:
+            case REMOVE_BINARY:
                 break;
-            case StreamListener.UNKNOWN:
+            case UNKNOWN:
                 return;
         }
         // reset mode (as per method description: prepare for being reused for a different job.)
-        mode = StreamListener.UNKNOWN;
+        mode = ReindexMode.UNKNOWN;
         // clear model cache
         cacheModel.removeAll();
     }
