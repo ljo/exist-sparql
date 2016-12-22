@@ -26,8 +26,10 @@ import org.exist.security.PermissionDeniedException;
 import org.exist.storage.DBBroker;
 import org.exist.storage.IndexSpec;
 import org.exist.storage.NodePath;
+import org.exist.storage.lock.Lock.LockMode;
 import org.exist.storage.txn.Txn;
 import org.exist.util.DatabaseConfigurationException;
+import org.exist.util.LockException;
 import org.exist.util.Occurrences;
 import org.exist.xquery.QueryRewriter;
 import org.exist.xquery.XPathException;
@@ -197,11 +199,15 @@ public class TDBIndexWorker implements IndexWorker {
     public void removeCollection(Collection collection, DBBroker broker, boolean reindex) throws PermissionDeniedException {
         RDFIndexConfig cfg = getIndexConfig(collection);
         if (cfg != null) {
-            Iterator<DocumentImpl> it = collection.iterator(broker);
-            while (it.hasNext()) {
-                DocumentImpl doc = it.next();
-                removeDocument(doc);
-            }
+	    try {
+		Iterator<DocumentImpl> it = collection.iterator(broker);
+		while (it.hasNext()) {
+		    DocumentImpl doc = it.next();
+		    removeDocument(doc);
+		}
+	    } catch (LockException le) {
+		LOG.error(le);
+	    }
         }
     }
 
