@@ -23,15 +23,6 @@ Currently there is one function with the signature sparql:query($sparql-query as
 ```xquery
 xquery version "3.0";
 
-import module namespace sparql="http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
-
-declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace sr="http://www.w3.org/2005/sparql-results#";
-
-let $rdftest-coll := xmldb:create-collection("/db", "rdftest")
-let $rdftest-conf-coll := xmldb:create-collection("/db/system/config/db", "rdftest")
-xquery version "3.0";
-
 import module namespace sparql = "http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
 
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
