@@ -1,175 +1,416 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+        <relativePath />
+    </parent>
+
     <groupId>org.exist-db.xquery.apps</groupId>
     <artifactId>exist-sparql</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+
     <name>exist-sparql</name>
     <description>Integrates SPARQL and RDF indexing through Jena TDB into eXist-db.</description>
+    <url>>https://www.github.com/ljo/exist-sparql</url>
+    <inceptionYear>2015</inceptionYear>
+
     <organization>
         <name>The eXist-db Project</name>
         <url>http://exist-db.org/</url>
     </organization>
+
     <licenses>
-      <license>
-        <name>GNU General Public License</name>
-        <url>http://www.gnu.org/licenses/gpl.txt</url>
-        <distribution>repo</distribution>
-      </license>
+        <license>
+            <name>GNU General Public License, version 3</name>
+            <url>http://opensource.org/licenses/gpl-3.0</url>
+            <distribution>repo</distribution>
+        </license>
     </licenses>
+
     <scm>
-      <connection>scm:git:git@github.com:ljo/exist-sparql.git</connection>
-      <developerConnection>scm:git:git@github.com:ljo/exist-sparql.git</developerConnection>
-      <url>git@github.com:ljo/exist-sparql.git</url>
+        <connection>scm:git:git@github.com:ljo/exist-sparql.git</connection>
+        <developerConnection>scm:git:git@github.com:ljo/exist-sparql.git</developerConnection>
+        <url>git@github.com:ljo/exist-sparql.git</url>
     </scm>
+
     <developers>
-      <developer>
-        <id>ljo</id>
-        <name>Leif-Jöran Olsson</name>
-        <organization>eXist-db</organization>
-        <url>http://exist-db.org/</url>
-      </developer>
+        <developer>
+            <id>ljo</id>
+            <name>Leif-Jöran Olsson</name>
+            <organization>eXist-db</organization>
+            <url>http://exist-db.org/</url>
+        </developer>
     </developers>
+
+    <properties>
+        <project.email>exist-open@lists.sourceforge.net</project.email>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.source>1.8</project.build.source>
+        <project.build.target>1.8</project.build.target>
+
+        <exist.version>20170627-SNAPSHOT</exist.version> <!-- TODO update to 3.3.0 when released... don't forget to update the .xar config also! -->
+        <jena.tdb.version>1.1.2</jena.tdb.version>
+
+        <!-- needed for kuberam-expath-plugin -->
+        <sparql.module.namespace>http://exist-db.org/xquery/sparql</sparql.module.namespace>
+        <java-package-name>org.exist.xquery.modules.rdf</java-package-name>
+        <java-package-main-class-name>SparqlModule</java-package-main-class-name>
+        <java-lib-version>${project.version}</java-lib-version>
+        <module-prefix>${java-package-name}</module-prefix>
+        <package-title>${project.name}</package-title>
+        <package-name>${sparql.module.namespace}</package-name>
+        <package-abbrev>${project.artifactId}</package-abbrev>
+        <package-final-name>${project.artifactId}-${project.version}</package-final-name>
+
+    </properties>
+
     <dependencies>
-      <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-tdb</artifactId>
-	<version>1.1.2</version>
-	<exclusions>
-	  <exclusion>
-	    <groupId>com.fasterxml.jackson.core</groupId>
-	    <artifactId>jackson-core</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>com.fasterxml.jackson.core</groupId>
-	    <artifactId>jackson-annotation</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>com.fasterxml.jackson.core</groupId>
-	    <artifactId>jackson-databind</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>log4j</groupId>
-	    <artifactId>log4j</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>xerces</groupId>
-	    <artifactId>xercesImpl</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpclient-cache</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpclient</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-lang3</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-csv</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-logging</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>jcl-over-slf4j</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.apache.thrift</groupId>
-	    <artifactId>libthrift</artifactId>
-	  </exclusion>
-	</exclusions>
-      </dependency>
-      <!-- jena-arc 2.13.0 jena-core 2.13.0 jena-iri 1.1.2 -->
-      <!--dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-arq</artifactId>
-	<version>2.13.0</version>
-      </dependency>
-      <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-core</artifactId>
-	<version>2.13.0</version>
-      </dependency>
-      <dependency>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-iri</artifactId>
-	<version>1.1.2</version>
-      </dependency-->
+        <dependency>
+            <groupId>org.exist-db</groupId>
+            <artifactId>exist-core</artifactId>
+            <version>${exist.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.8.2</version>
+            <scope>provided</scope> <!-- provided by eXist-db -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb</artifactId>
+            <version>${jena.tdb.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient-cache</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.exist-db</groupId>
+            <artifactId>exist-testkit</artifactId>
+            <version>${exist.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
     <build>
-      <plugins>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-	  <version>2.4</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <configuration>
-            <descriptorRefs>
-              <descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
-	    <outputDirectory>java/lib</outputDirectory>
-         </configuration>
-          <executions>
-            <execution>
-              <id>make-sparql-jar-with-dependencies</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-	<!--plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.8</version>
-          <executions>
-            <execution>
-              <id>copy-dependencies</id>
-              <phase>package</phase>
-              <goals>
-		<goal>copy-dependencies</goal>
-              </goals>
-              <configuration>
-		<outputDirectory>java/lib</outputDirectory>
-		<overWriteReleases>false</overWriteReleases>
-		<overWriteSnapshots>true</overWriteSnapshots>
-		<overWriteIfNewer>true</overWriteIfNewer>
-              </configuration>
-            </execution>
-          </executions>
-	</plugin-->
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.7</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <configuration>
-	      <!--exportAntProperties>true</exportAntProperties-->
-	      
-	      <target><echo message="JAVA_HOME: ${env.JAVA_HOME}"/></target>
-	      <target><echo message="sun.boot.class.path: ${env.sun.boot.class.path}"/></target>
-	      <target name="run-ant-rebuild">
-		<ant antfile="build.xml" target="rebuild" />
-	      </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      </plugins>
-    </build> 
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>analyze</id>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>true</failOnWarning>
+                            <ignoreNonCompile>false</ignoreNonCompile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>1.4.5</version>
+                <configuration>
+                    <failBuildOnCVSS>8</failBuildOnCVSS>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <header>com/mycila/maven/plugin/license/templates/GPL-3.txt</header>
+                    <failIfMissing>true</failIfMissing>
+                    <aggregate>true</aggregate>
+                    <strictCheck>true</strictCheck>
+                    <properties>
+                        <owner>${project.organization.name}</owner>
+                        <organisation>${project.organization.name}</organisation>
+                        <email>${project.email}</email>
+                        <url>${project.organization.url}</url>
+                        <year>${project.inceptionYear}</year>
+                    </properties>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <excludes>
+                        <exclude>pom.xml</exclude>
+                        <exclude>README.md</exclude>
+                        <exclude>LICENSE</exclude>
+                        <exclude>xar-assembly.xml</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-headers</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.code54.mojo</groupId>
+                <artifactId>buildversion-plugin</artifactId>
+                <version>1.0.3</version>
+                <executions>
+                    <execution>
+                        <goals><goal>set-properties</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
+                <configuration>
+                    <source>${project.build.source}</source>
+                    <target>${project.build.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <!-- unfortunately this is needed by kuberam-expath-plugin to successfully
+                            generate its components.xml -->
+                            <mainClass>${java-package-name}.${java-package-main-class-name}</mainClass>
+                            <packageName>${java-package-name}</packageName>
+                        </manifest>
+                        <manifestEntries>
+                            <!-- unfortunately this is needed by kuberam-expath-plugin to successfully
+                           generate its components.xml -->
+                            <ModuleNamespace>${sparql.module.namespace}</ModuleNamespace>
+                            <Build-Tag>${build-tag}</Build-Tag>
+                            <Git-Commit>${build-commit}</Git-Commit>
+                            <Git-Commit-Abbrev>${build-commit-abbrev}</Git-Commit-Abbrev>
+                            <Build-Version>${build-version}</Build-Version>
+                            <Build-Timestamp>${build-tstamp}</Build-Timestamp>
+                            <Source-Repository>${project.scm.connection}</Source-Repository>
+                            <Description>${project.description}</Description>
+                            <Implementation-URL>${project.url}</Implementation-URL>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Build-Tag>${build-tag}</Build-Tag>
+                            <Git-Commit>${build-commit}</Git-Commit>
+                            <Git-Commit-Abbrev>${build-commit-abbrev}</Git-Commit-Abbrev>
+                            <Build-Version>${build-version}</Build-Version>
+                            <Build-Timestamp>${build-tstamp}</Build-Timestamp>
+                            <Source-Repository>${project.scm.connection}</Source-Repository>
+                            <Description>${project.description}</Description>
+                            <Implementation-URL>${project.url}</Implementation-URL>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Build-Tag>${build-tag}</Build-Tag>
+                            <Git-Commit>${build-commit}</Git-Commit>
+                            <Git-Commit-Abbrev>${build-commit-abbrev}</Git-Commit-Abbrev>
+                            <Build-Version>${build-version}</Build-Version>
+                            <Build-Timestamp>${build-tstamp}</Build-Timestamp>
+                            <Source-Repository>${project.scm.connection}</Source-Repository>
+                            <Description>${project.description}</Description>
+                            <Implementation-URL>${project.url}</Implementation-URL>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId> <!-- avoid a bug with GPG plugin hanging http://jira.codehaus.org/browse/MGPG-9 -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>exist</shadedClassifierName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                                    <addHeader>false</addHeader>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>META-INF/LICENSE</resource>
+                                    <file>LICENSE</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>META-INF/README.md</resource>
+                                    <file>README.md</file>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>ro.kuberam.maven.plugins</groupId>
+                <artifactId>kuberam-expath-plugin</artifactId>
+                <version>0.4.9</version>
+                <executions>
+                    <execution>
+                        <id>create-xar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>make-xar</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>xar-assembly.xml</descriptor>
+                            <finalName>${package-final-name}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>exist</id>
+            <url>https://raw.github.com/eXist-db/mvn-repo/master/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>clojars.org</id>
+            <url>http://clojars.org/repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
 </project>

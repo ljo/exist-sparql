@@ -12,44 +12,28 @@
   <property name="project.app.jar" value="${project.app}-${project.version}${git.commit}.jar"/>
   <property name="project.lib.version" value="0.1-SNAPSHOT"/>
   <property name="project.lib.jar" value="${project.app}-${project.version}-jar-with-dependencies.jar"/>
-  <property name="build" value="./build"/>
+  <property name="build" value="./target"/>
   <property name="build.compiler" value="extJavac"/>
-  <property name="java.src" value="java/src"/>
+  <property name="java.src" value="src/main/java"/>
   <property name="java.classes" value="${build}/classes"/>
-  <property name="java.libs" value="java/lib"/>
-  <property name="scripts" value="resources/scripts"/>
+  <property name="java.libs" value="lib"/>
+  <property name="java.libs.tmp" value="lib-tmp"/>
+  <property name="xar.resources" value="src/main/xar-resources"/>
   <property name="server.url" value="http://demo.exist-db.org/exist/apps/public-repo/public/"/>
 
-  <path id="classpath">
-    <fileset dir="${exist.dir}">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${exist.dir}/lib/core">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${exist.dir}/lib/optional">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${exist.dir}/lib/extensions">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${exist.dir}/extensions/modules/lib">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${exist.dir}/tools/jetty/lib">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${java.libs}">
-      <include name="*.jar"/>
-    </fileset>
-  </path>
+  <target name="resolve" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <mkdir dir="${java.libs.tmp}"/>
+    <get src="https://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar" dest="${java.libs.tmp}/ivy-2.4.0.jar" skipexisting="true"/>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${java.libs.tmp}/ivy-2.4.0.jar"/>
+    <ivy:retrieve/>
+    <ivy:cachepath pathid="dependencies.classpath"/>
+  </target>
 
   <target name="all" depends="xar"/>
   <target name="rebuild" depends="clean,all"/>
 
   <target name="clean">
     <delete dir="${build}"/>
-    <delete dir="${java.classes}"/>
     <delete file="expath-pkg.xml"/>
     <delete file="exist.xml"/>
   </target>
@@ -59,10 +43,10 @@
     <mkdir dir="${java.classes}"/>
   </target>
 
-  <target name="compile" depends="prepare">
-    <javac srcdir="${java.src}" destdir="${java.classes}" optimize="true" debug="true" target="1.7" source="1.7" includeantruntime="false">
+  <target name="compile" depends="prepare, resolve">
+    <javac srcdir="${java.src}" destdir="${java.classes}" optimize="true" debug="true" target="1.8" source="1.8" includeantruntime="false">
       <classpath>
-        <path refid="classpath"/>
+        <path refid="dependencies.classpath"/>
       </classpath>
     </javac>
   </target>
@@ -92,16 +76,13 @@
     </copy>
     <zip destfile="${build}/${project.app}-${project.version}${git.commit}.xar">
       <fileset dir=".">
-        <include name="*.*"/>
-        <include name="modules/**"/>
-        <include name="templates/**"/>
-        <include name="resources/**"/>
-        <exclude name=".git*"/>
-        <exclude name="build.*"/>
-        <exclude name="*.tmpl"/>
-        <exclude name="*.properties"/>
+        <include name="README.md"/>
+        <include name="LICENSE"/>
+        <include name="expath-pkg.xml"/>
+        <include name="exist.xml"/>
+        <include name="${xar.resources}/**"/>
       </fileset>
-      <zipfileset dir="${build}" includes="*.jar" prefix="content"/>
+      <zipfileset dir="${build}" includes="${java.libs}/${project.app.jar}" prefix="content"/>
       <zipfileset dir="${java.libs}" includes="*.jar" prefix="content"/>
     </zip>
     <delete dir="${build}/classes"/>
