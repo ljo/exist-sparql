@@ -1,19 +1,27 @@
 # exist-sparql
-===========================
 
 Integrates SPARQL and RDF indexing through the Jena TDB libraries into eXist-db.
 
 ## Compile and install
 If you installed the app through the package manager you only need to do step 5 and restart.
 
-1. clone the github repository: https://github.com/ljo/exist-sparql
-2. edit local.build.properties and set exist.dir to point to your eXist-db install directory
-3. call "ant" in the directory to create a .xar
-4. upload the xar into eXist-db using the dashboard
-5. enable the module in conf.xml, by adding one module declaration under "indexer/modules":
+1. clone the github repository: https://github.com/ljo/exist-sparql.git
+
+2. You may then either build with Apache Maven (preferred) or Apache Ant.
+
+    1. To build with Apache Maven: `mvn clean compile package`
+
+    2. or, to build with Apache Ant: `ant`
+
+3. upload the xar file found in `target/` into eXist-db using the dashboard
+
+4. enable the Index module in conf.xml, by adding one module declaration under "indexer/modules":
 ```xml
 <module id="rdf-index" class="org.exist.indexing.rdf.TDBRDFIndex"/>
 ```
+
+5. Restart eXist-db.
+
 
 ## Overview
 Currently there is one function with the signature sparql:query($sparql-query as xs:string) as node() available. See the usage example below.

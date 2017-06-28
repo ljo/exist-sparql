@@ -1,0 +1,31 @@
+<ivy-module version="2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="ivy.xsd">
+    <info organisation="org.exist-db" module="exist-sparql"/>
+
+    <configurations>
+        <conf name="provided" description="Needed for compile, but will be present on the target platform."/>
+    </configurations>
+
+    <dependencies>
+        <dependency org="org.exist-db" name="exist-core" rev="20170627-SNAPSHOT" conf="provided->master"/>
+        <dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.8.2" conf="provided->master"/>
+        <dependency org="org.apache.jena" name="jena-tdb" rev="1.1.2">
+            <exclude module="jackson-core"/>
+            <exclude module="log4j"/>
+            <exclude module="xercesImpl"/>
+            <exclude module="httpclient-cache"/>
+            <exclude module="httpclient"/>
+            <exclude module="commons-lang3"/>
+            <exclude module="commons-logging"/>
+            <exclude module="slf4j-api"/>
+            <exclude module="slf4j-log4j12"/>
+            <exclude module="jcl-over-slf4j"/>
+        </dependency>
+
+        <dependency org="org.exist-db" name="exist-testkit" rev="20170627-SNAPSHOT" conf="provided->master"/>
+        <dependency org="junit" name="junit" rev="4.12" conf="provided->master"/>
+
+    </dependencies>
+
+</ivy-module>

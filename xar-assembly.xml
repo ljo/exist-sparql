@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://expath.org/ns/pkg" name="${package-name}" abbrev="${package-abbrev}" version="${project.version}"
+    spec="1.0">
+    <title>${package-title}</title>
+    <author id="exist-db">eXist-db</author>
+    <website>${project.url}</website>
+    <license>GNU General Public License, version 3</license>
+    <copyright>true</copyright>
+    <type>library</type>
+    <status>stable</status>
+    <tag>${project.artifactId}</tag>
+    <tag>library</tag>
+    <tag>sparql</tag>
+    <category id="libs">Libraries</category>
+    <category id="exist">eXist extensions</category>
+    <dependency processor="http://exist-db.org" semver-min="3.2.0" />
+    <prepare>pre-install.xql</prepare>
+
+    <dependencySets>
+        <dependencySet>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>${project.artifactId}</artifactId>
+            <version>${project.version}</version>
+
+            <!-- TODO(AR) report the below issue to Claudius -->
+            <!-- the classifier should tell it to use the shaded jar, but this seems unsupported.
+            So instead we have to include all the dependencies below, as whilst they should be included as
+            transitive dependencies for some reason the plugin fails to do that -->
+            <!-- classifier>exist</classifier -->
+        </dependencySet>
+
+        <!-- dependencies of the above -->
+        <dependencySet>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb</artifactId>
+            <version>1.1.2</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-arq</artifactId>
+            <version>2.13.0</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
+            <version>2.13.0</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-iri</artifactId>
+            <version>1.1.2</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>com.github.jsonld-java</groupId>
+            <artifactId>jsonld-java</artifactId>
+            <version>0.5.1</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.3.3</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.3.0</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.9.2</version>
+        </dependencySet>
+        <dependencySet>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.0</version>
+        </dependencySet>
+
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}</directory>
+            <includes>
+                <include>README.md</include>
+                <include>LICENSE</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/xar-resources</directory>
+        </fileSet>
+    </fileSets>
+
+</package>

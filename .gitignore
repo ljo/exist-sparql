@@ -1,8 +1,10 @@
 *.class
 *.iml
-*.xar
+.idea/
 expath-pkg.xml
 exist.xml
 local.build.properties
-build/
+lib/
+lib-tmp/
 target/
+webapp/
