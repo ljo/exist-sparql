@@ -62,12 +62,12 @@ public class RDFIndexTest {
             + "        xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
             + "        xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n"
             + "\n"
-            + "<rdf:Description ID=\"biologicalParent\">\n"
-            + "  <rdf:type resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property\"/>\n"
+            + "<rdf:Description rdf:ID=\"biologicalParent\">\n"
+            + "  <rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property\"/>\n"
             + "</rdf:Description>\n"
             + "\n"
-            + "<rdf:Description ID=\"biologicalFather\">\n"
-            + "  <rdf:type resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property\"/>\n"
+            + "<rdf:Description rdf:ID=\"biologicalFather\">\n"
+            + "  <rdf:type rdf:resource=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property\"/>\n"
             + "  <rdfs:subPropertyOf rdf:resource=\"#biologicalParent\"/>\n"
             + "</rdf:Description>\n"
             + "\n"
@@ -75,7 +75,7 @@ public class RDFIndexTest {
             + "";
 
     @ClassRule
-    public static ExistEmbeddedServer existEmbeddedServer = new ExistEmbeddedServer(true);
+    public static ExistEmbeddedServer existEmbeddedServer = new ExistEmbeddedServer(true, true);
 
     @Test
     public void query() {

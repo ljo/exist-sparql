@@ -7,15 +7,11 @@ If you installed the app through the package manager you only need to do step 5 
 
 1. clone the github repository: https://github.com/ljo/exist-sparql.git
 
-2. You may then either build with Apache Maven (preferred) or Apache Ant.
-
-    1. To build with Apache Maven: `mvn clean compile package`
-
-    2. or, to build with Apache Ant: `ant`
+2. To build with Apache Maven: `mvn clean compile package`
 
 3. upload the xar file found in `target/` into eXist-db using the dashboard
 
-4. enable the Index module in conf.xml, by adding one module declaration under "indexer/modules":
+4. enable the Index module in `$EXIST_HOME/conf.xml`, by adding one module declaration under "indexer/modules":
 ```xml
 <module id="rdf-index" class="org.exist.indexing.rdf.TDBRDFIndex"/>
 ```
@@ -24,7 +20,12 @@ If you installed the app through the package manager you only need to do step 5 
 
 
 ## Overview
-Currently there is one function with the signature sparql:query($sparql-query as xs:string) as node() available. See the usage example below.
+There is currently only one function available with the signature:
+```xquery
+sparql:query($sparql-query as xs:string) as node()
+```
+
+See the usage example below...
 
 ## Usage example
 
