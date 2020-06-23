@@ -16,7 +16,7 @@
 
     <name>exist-sparql</name>
     <description>Integrates SPARQL and RDF indexing through Jena TDB into eXist-db.</description>
-    <url>>https://www.github.com/ljo/exist-sparql</url>
+    <url>https://www.github.com/ljo/exist-sparql</url>
     <inceptionYear>2015</inceptionYear>
 
     <organization>
