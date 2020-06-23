@@ -92,4 +92,11 @@
         </fileSet>
     </fileSets>
 
+    <components>
+        <resource>
+            <public-uri>${sparql.module.namespace}</public-uri>
+            <file>urn:java:class:${java-package-name}.${java-package-main-class-name}</file>
+        </resource>
+    </components>
+
 </package>
