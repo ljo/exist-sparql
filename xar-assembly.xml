@@ -30,52 +30,35 @@
             <!-- classifier>exist</classifier -->
         </dependencySet>
 
-        <!-- dependencies of the above -->
-        <dependencySet>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-tdb</artifactId>
-            <version>1.1.2</version>
-        </dependencySet>
-        <dependencySet>
+        <!-- Jena -->
+        <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>2.13.0</version>
-        </dependencySet>
-        <dependencySet>
+            <version>${jena.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
-            <version>2.13.0</version>
-        </dependencySet>
-        <dependencySet>
+            <version>${jena.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.jena</groupId>
-            <artifactId>jena-iri</artifactId>
-            <version>1.1.2</version>
-        </dependencySet>
-        <dependencySet>
-            <groupId>com.github.jsonld-java</groupId>
-            <artifactId>jsonld-java</artifactId>
-            <version>0.5.1</version>
-        </dependencySet>
-        <dependencySet>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.10.3</version>
-        </dependencySet>
-        <dependencySet>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.10.3</version>
-        </dependencySet>
-        <dependencySet>
-            <groupId>org.apache.thrift</groupId>
-            <artifactId>libthrift</artifactId>
-            <version>0.9.2</version>
-        </dependencySet>
-        <dependencySet>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-csv</artifactId>
-            <version>1.0</version>
-        </dependencySet>
+            <artifactId>jena-tdb</artifactId>
+            <version>${jena.version}</version>
+        </dependency>
+
+        <!-- dependencies of jena-arq
+            sadly the Kuberam XAR plugin doesn't detect these correctly -->
+        <dependencySet><groupId>org.apache.jena</groupId><artifactId>jena-shaded-guava</artifactId><version>${jena.version}</version></dependencySet>
+        <dependencySet><groupId>com.github.jsonld-java</groupId><artifactId>jsonld-java</artifactId><version>0.12.5</version></dependencySet>
+        <dependencySet><groupId>org.apache.thrift</groupId><artifactId>libthrift</artifactId><version>0.13.0</version></dependencySet>
+
+        <!-- dependencies of jena-core
+            sadly the Kuberam XAR plugin doesn't detect these correctly -->
+        <dependencySet><groupId>org.apache.jena</groupId><artifactId>jena-base</artifactId><version>${jena.version}</version></dependencySet>
+        <dependencySet><groupId>org.apache.commons</groupId><artifactId>commons-csv</artifactId><version>1.8</version></dependencySet>
+        <dependencySet><groupId>com.github.andrewoma.dexx</groupId><artifactId>collection</artifactId><version>0.7</version></dependencySet>
+        <dependencySet><groupId>org.apache.jena</groupId><artifactId>jena-iri</artifactId><version>${jena.version}</version></dependencySet>
 
     </dependencySets>
 

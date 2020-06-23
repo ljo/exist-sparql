@@ -1,11 +1,11 @@
 package org.exist.indexing.rdf;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdfxml.xmlinput.SAX2Model;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
-import com.hp.hpl.jena.sparql.resultset.ResultSetApply;
-import com.hp.hpl.jena.sparql.resultset.XMLResults;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdfxml.xmlinput.SAX2Model;
+import org.apache.jena.riot.resultset.rw.XMLResults;
+import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.resultset.ResultSetApply;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
