@@ -2,7 +2,8 @@
 <package xmlns="http://expath.org/ns/pkg" name="${package-name}" abbrev="${package-abbrev}" version="${project.version}"
     spec="1.0">
     <title>${package-title}</title>
-    <author id="exist-db">eXist-db</author>
+    <author id="jlo">Leif-Jöran Olsson</author>
+    <author id="abc2386">Anton Olsson</author>
     <website>${project.url}</website>
     <license>GNU General Public License, version 3</license>
     <copyright>true</copyright>
