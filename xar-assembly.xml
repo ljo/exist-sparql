@@ -13,7 +13,7 @@
     <tag>sparql</tag>
     <category id="libs">Libraries</category>
     <category id="exist">eXist extensions</category>
-    <dependency processor="http://exist-db.org" semver-min="3.2.0" />
+    <dependency processor="http://exist-db.org" semver-min="5.2.0" />
     <prepare>pre-install.xql</prepare>
 
     <dependencySets>
@@ -58,12 +58,12 @@
         <dependencySet>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.3.3</version>
+            <version>2.10.3</version>
         </dependencySet>
         <dependencySet>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.3.0</version>
+            <version>2.10.3</version>
         </dependencySet>
         <dependencySet>
             <groupId>org.apache.thrift</groupId>

@@ -54,7 +54,7 @@
         <project.build.source>1.8</project.build.source>
         <project.build.target>1.8</project.build.target>
 
-        <exist.version>20170627-SNAPSHOT</exist.version> <!-- TODO update to 3.3.0 when released... don't forget to update the .xar config also! -->
+        <exist.version>5.2.0</exist.version> <!-- don't forget to update the .xar config also! -->
         <jena.tdb.version>1.1.2</jena.tdb.version>
 
         <!-- needed for kuberam-expath-plugin -->
@@ -78,9 +78,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+            <scope>provided</scope> <!-- provided by eXist-db -->
+        </dependency>
+        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.8.2</version>
+            <version>2.13.3</version>
             <scope>provided</scope> <!-- provided by eXist-db -->
         </dependency>
         <dependency>
@@ -131,20 +137,24 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.exist-db</groupId>
-            <artifactId>exist-testkit</artifactId>
-            <version>${exist.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources-filtered</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -398,13 +408,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>exist</id>
-            <url>https://raw.github.com/eXist-db/mvn-repo/master/</url>
-        </repository>
-    </repositories>
 
     <pluginRepositories>
         <pluginRepository>
